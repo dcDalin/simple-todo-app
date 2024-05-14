@@ -47,10 +47,11 @@ Follow these steps to get started with the project:
 
 ## Scripts
 
-- `npm start`: Starts the development server.
+- `npm run dev`: Starts the development server.
 - `npm run build`: Builds the app for production.
+- `npm run lint`: Check for linting errors.
+- `npm run format`: Fix linting errors.
 - `npm test`: Runs the test suite.
-- `npm run eject`: Ejects the app configuration.
 
 ## Node.js Version
 
