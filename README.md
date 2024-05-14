@@ -13,7 +13,7 @@ Follow these steps to get started with the project:
 1. **Clone the repository**:
 
    ```sh
-   git clone https://github.com/your-username/simple-todo-app.git
+   git clone https://github.com/dcDalin/simple-todo-app.git
    cd simple-todo-app
    ```
 
@@ -40,10 +40,10 @@ Follow these steps to get started with the project:
 4. **Start the development server**:
 
    ```sh
-   npm start
+   npm run dev
    ```
 
-   This will start the development server and you can view the application by navigating to [http://localhost:3000](http://localhost:3000) in your browser.
+   This will start the development server and you can view the application by navigating to [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Scripts
 
