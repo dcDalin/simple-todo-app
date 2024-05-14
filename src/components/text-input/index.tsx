@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React, { useRef, useState } from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
-import { ImSpinner2 } from 'react-icons/im';
 
 export type InputProps = {
   label: string;
   id: string;
+  icon: React.ReactNode;
   placeholder?: string;
   loading?: boolean;
   type?: React.HTMLInputTypeAttribute;
@@ -17,6 +17,7 @@ export default function TextInput({
   placeholder = '',
   loading,
   id = '',
+  icon,
   type = 'text',
   readOnly = false,
   hideError = false,
@@ -28,13 +29,51 @@ export default function TextInput({
     formState: { errors },
   } = useFormContext();
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  function focusInput() {
+    if (loading) return;
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
+  function handleFocus() {
+    setIsFocused(true);
+  }
+
+  function handleBlur() {
+    setIsFocused(false);
+  }
+
+  // Merge refs: react-hook-form and your own ref
+  const { ref: registerRef, ...registerProps } = register(id, validation);
+
   return (
-    <div>
-      <label className="">{label}</label>
-      <div>
-        <span>hey</span>
+    <div className="w-full py-2">
+      <label htmlFor={id} className="text-lg">
+        {label}
+      </label>
+      <div
+        className={`flex items-center border rounded-lg hover:cursor-pointer ${
+          errors[id]
+            ? 'border-red-500'
+            : isFocused
+              ? 'border-blue-500'
+              : 'border-red-50'
+        }`}
+        onClick={focusInput}
+      >
+        <div className="px-2">{icon}</div>
         <input
-          {...register(id, validation)}
+          ref={(element) => {
+            registerRef(element); // Assign react-hook-form ref
+            inputRef.current = element; // Assign your own ref
+          }}
+          className="w-full h-full py-3 bg-transparent placeholder-opacity-50 focus:outline-none"
+          {...registerProps}
           {...rest}
           type={type}
           name={id}
@@ -42,42 +81,13 @@ export default function TextInput({
           placeholder={placeholder}
           aria-describedby={id}
           disabled={readOnly}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
-        <span>hey</span>
       </div>
+      {!hideError && errors[id] && (
+        <p className="text-red-500 text-xs pt-1">{`${errors[id]?.message}`}</p>
+      )}
     </div>
-    // <label className="flex flex-col w-full" htmlFor={id}>
-    //   <div className="label">
-    //     <span className="label-text">{label}</span>
-    //     {loading && (
-    //       <span className="label-text-alt">
-    //         {' '}
-    //         <ImSpinner2 className="animate-spin" />
-    //       </span>
-    //     )}
-    //   </div>
-    //   <input
-    //     {...register(id, validation)}
-    //     {...rest}
-    //     type={type}
-    //     name={id}
-    //     id={id}
-    //     placeholder={placeholder}
-    //     aria-describedby={id}
-    //     autoComplete={autocomplete}
-    //     className={clsx(
-    //       'input w-full',
-    //       errors[id] ? 'input-error' : 'input-bordered'
-    //     )}
-    //     disabled={readOnly}
-    //   />
-    //   <div className="label">
-    //     {!hideError && errors[id]?.message ? (
-    //       <span className="label-text-alt text-sm text-error">
-    //         {`${errors[id]?.message}`}
-    //       </span>
-    //     ) : null}
-    //   </div>
-    // </label>
   );
 }
