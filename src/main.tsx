@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import ErrorPage from './pages/error-page';
 import MainLayout from './layouts/main-layout';
+import LoginPage from './pages/login-page';
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <div>Login Screen</div>,
+        element: <LoginPage />,
       },
       {
         path: '/list',
