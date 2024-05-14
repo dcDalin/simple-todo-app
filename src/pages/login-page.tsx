@@ -8,6 +8,8 @@ import TextInput from '../components/text-input';
 import schema from '../utils/schema';
 import Container from '../layouts/container-layout';
 import Button from '../components/button';
+import { useAppDispatch } from '../redux/hooks';
+import { loginUser } from '../redux/slices/authSlice';
 
 interface FormValues {
   email: string;
@@ -26,8 +28,17 @@ export default function LoginPage() {
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (data: FormValues) => {
-    console.log('Data is: ', data);
+  const dispatch = useAppDispatch();
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const { email, password } = data;
+      const res = await dispatch(loginUser({ email, password }));
+
+      console.log('Res is **********: ', res);
+    } catch (error) {
+      console.log('Error is: ', error);
+    }
   };
 
   return (
