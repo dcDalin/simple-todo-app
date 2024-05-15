@@ -2,13 +2,15 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FaUser } from 'react-icons/fa';
 import { FaLock } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 import AppLogo from '../components/app-logo';
 import TextInput from '../components/text-input';
 import schema from '../utils/schema';
 import Container from '../layouts/container-layout';
 import Button from '../components/button';
-import { useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { loginUser } from '../redux/slices/authSlice';
 
 interface FormValues {
@@ -17,6 +19,8 @@ interface FormValues {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const methods = useForm<FormValues>({
     mode: 'onTouched',
     reValidateMode: 'onChange',
@@ -30,15 +34,15 @@ export default function LoginPage() {
 
   const dispatch = useAppDispatch();
 
+  const { error } = useAppSelector((state) => state.auth);
+
   const onSubmit = async (data: FormValues) => {
     try {
       const { email, password } = data;
-      const res = await dispatch(loginUser({ email, password }));
-
-      // TODO: Handle response
-      console.log('Res is **********: ', res);
-    } catch (error) {
-      console.log('Error is: ', error);
+      await dispatch(loginUser({ email, password }));
+      navigate('/list');
+    } catch (err) {
+      toast.error(error);
     }
   };
 
