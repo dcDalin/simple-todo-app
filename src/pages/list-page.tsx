@@ -4,40 +4,94 @@ import Container from '../layouts/container-layout';
 import TextInput from '../components/text-input';
 import { IoSearch } from 'react-icons/io5';
 import ListCard from '../components/list-card';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import {
+  listTodos,
+  searchTodos,
+  setIsNewActive,
+} from '../redux/slices/todoSlice';
+import EditCard from '../components/edit-card';
+import { useEffect, useCallback } from 'react';
 
 interface FormValues {
   todo?: string;
 }
 
 export default function ListPage() {
+  const dispatch = useAppDispatch();
+
+  const { isNewActive, todos } = useAppSelector((state) => state.todo);
+
+  useEffect(() => {
+    dispatch(listTodos());
+  }, [dispatch]);
+
   const methods = useForm<FormValues>({
     mode: 'onTouched',
     reValidateMode: 'onChange',
   });
 
+  const { handleSubmit, watch } = methods;
+
+  const watchSearchInput = watch('todo');
+
+  const onSubmit = useCallback(
+    (data: FormValues) => {
+      const { todo } = data;
+      dispatch(listTodos());
+      if (todo) {
+        dispatch(searchTodos(todo));
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    handleSubmit(onSubmit)();
+  }, [handleSubmit, onSubmit, watchSearchInput]);
+
   return (
     <section className="py-4">
-      <nav className="flex justify-end">
-        <Button size="sm" variant="secondary" className="w-20">
-          Logout
-        </Button>
+      <nav className="flex justify-end w-full">
+        <div>
+          <Button size="sm" variant="secondary">
+            Logout
+          </Button>
+        </div>
       </nav>
       <Container>
         <h2 className="text-3xl font-bold text-center py-2">My To-Do List</h2>
-        <div className="p-4 border border-gray-800 rounded-lg mt-10 bg-gray-900">
-          <div className="flex space-x-8 mb-4">
-            <div className="w-full">
-              <FormProvider {...methods}>
-                <TextInput id="email" icon={<IoSearch />} />
-              </FormProvider>
+        <div
+          id="search"
+          className="border border-gray-800 rounded-lg mt-10 bg-gray-900"
+        >
+          <div className=" bg-gray-800 p-4 rounded-lg">
+            <div className="flex space-x-8 mb-4">
+              <div className="w-full">
+                <FormProvider {...methods}>
+                  <TextInput id="todo" icon={<IoSearch />} />
+                </FormProvider>
+              </div>
+              <div className="my-2">
+                <Button size="md" onClick={() => dispatch(setIsNewActive())}>
+                  New
+                </Button>
+              </div>
             </div>
-            <Button size="sm" className="w-20 my-2">
-              New
-            </Button>
+            {isNewActive ? (
+              <div className="w-full">
+                <EditCard />
+              </div>
+            ) : null}
           </div>
-          <div>
-            <ListCard />
-            <ListCard />
+          <div id="children" className="p-4 min-h-screen md:min-h-96">
+            {todos && todos.length ? (
+              todos.map(({ id, task }) => {
+                return <ListCard key={id} id={id} task={task} />;
+              })
+            ) : (
+              <p>No todos</p>
+            )}
           </div>
         </div>
       </Container>

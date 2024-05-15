@@ -33,7 +33,7 @@ export default function Button({
   };
 
   // Combine all the styles
-  const combinedStyles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+  const combinedStyles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabled && 'bg-gray-400 hover:cursor-not-allowed'} ${className}`;
 
   return (
     <button className={combinedStyles} disabled={disabled} {...props}>

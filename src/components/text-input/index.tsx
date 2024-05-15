@@ -4,7 +4,7 @@ import { RegisterOptions, useFormContext } from 'react-hook-form';
 export type InputProps = {
   label?: string;
   id: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   placeholder?: string;
   loading?: boolean;
   type?: React.HTMLInputTypeAttribute;
@@ -68,13 +68,13 @@ export default function TextInput({
         }`}
         onClick={focusInput}
       >
-        <div className="px-2">{icon}</div>
+        {icon && <div className="px-2">{icon}</div>}
         <input
           ref={(element) => {
             registerRef(element); // Assign react-hook-form ref
             inputRef.current = element; // Assign your own ref
           }}
-          className="w-full h-full py-3 bg-transparent placeholder-opacity-50 focus:outline-none"
+          className="w-full px-2 h-full py-3 bg-transparent placeholder-opacity-50 focus:outline-none"
           {...registerProps}
           {...rest}
           type={type}
@@ -87,9 +87,11 @@ export default function TextInput({
           onBlur={handleBlur}
         />
       </div>
-      {!hideError && errors[id] && (
-        <p className="text-red-500 text-xs pt-1">{`${errors[id]?.message}`}</p>
-      )}
+      <div className="h-4">
+        {!hideError && errors[id] && (
+          <p className="text-red-500 text-xs pt-1">{`${errors[id]?.message}`}</p>
+        )}
+      </div>
     </div>
   );
 }
