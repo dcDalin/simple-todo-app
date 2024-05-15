@@ -7,6 +7,7 @@ import MainLayout from './layouts/main-layout';
 import LoginPage from './pages/login-page';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
+import ListPage from './pages/list-page';
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/list',
-        element: <div>List Screen</div>,
+        element: <ListPage />,
       },
     ],
   },

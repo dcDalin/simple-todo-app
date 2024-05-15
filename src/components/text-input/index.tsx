@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 export type InputProps = {
-  label: string;
+  label?: string;
   id: string;
   icon: React.ReactNode;
   placeholder?: string;
@@ -53,9 +53,11 @@ export default function TextInput({
 
   return (
     <div className="w-full py-2">
-      <label htmlFor={id} className="text-lg">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="text-lg">
+          {label}
+        </label>
+      )}
       <div
         className={`flex items-center border rounded-lg hover:cursor-pointer ${
           errors[id]

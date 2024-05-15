@@ -35,6 +35,7 @@ export default function LoginPage() {
       const { email, password } = data;
       const res = await dispatch(loginUser({ email, password }));
 
+      // TODO: Handle response
       console.log('Res is **********: ', res);
     } catch (error) {
       console.log('Error is: ', error);
