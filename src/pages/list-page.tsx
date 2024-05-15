@@ -12,6 +12,8 @@ import {
 } from '../redux/slices/todoSlice';
 import EditCard from '../components/edit-card';
 import { useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logOutUser } from '../redux/slices/authSlice';
 
 interface FormValues {
   todo?: string;
@@ -19,8 +21,17 @@ interface FormValues {
 
 export default function ListPage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useAppSelector((state) => state.auth);
 
   const { isNewActive, todos } = useAppSelector((state) => state.todo);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, [navigate, user]);
 
   useEffect(() => {
     dispatch(listTodos());
@@ -54,7 +65,11 @@ export default function ListPage() {
     <section className="py-4">
       <nav className="flex justify-end w-full">
         <div>
-          <Button size="sm" variant="secondary">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => dispatch(logOutUser())}
+          >
             Logout
           </Button>
         </div>

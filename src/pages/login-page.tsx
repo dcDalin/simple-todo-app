@@ -11,7 +11,8 @@ import schema from '../utils/schema';
 import Container from '../layouts/container-layout';
 import Button from '../components/button';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { loginUser } from '../redux/slices/authSlice';
+import { getUser, loginUser } from '../redux/slices/authSlice';
+import { useEffect } from 'react';
 
 interface FormValues {
   email: string;
@@ -20,6 +21,7 @@ interface FormValues {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const methods = useForm<FormValues>({
     mode: 'onTouched',
@@ -27,20 +29,39 @@ export default function LoginPage() {
     resolver: yupResolver(schema),
   });
 
+  const { user, error } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/list');
+    }
+  }, [navigate, user]);
+
   const {
     handleSubmit,
     formState: { isValid },
   } = methods;
 
-  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { id: 'login-error' });
+    }
+  }, [error]);
 
-  const { error } = useAppSelector((state) => state.auth);
+  useEffect(() => {
+    if (user) {
+      navigate('/list');
+    }
+  }, [user]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       const { email, password } = data;
       await dispatch(loginUser({ email, password }));
-      navigate('/list');
     } catch (err) {
       toast.error(error);
     }
