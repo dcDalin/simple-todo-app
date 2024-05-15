@@ -41,7 +41,7 @@ export const loginUser = createAsyncThunk(
 
       const { email, password } = payload;
 
-      if (email === 'test@rapptrlabs.com' && password === 'Test123') {
+      if (email === 'test@rapptrlabs.com' && password === 'Pass123') {
         const response: User = {
           user_id: 16,
           user_email: 'test@rapptrlabs.com',
