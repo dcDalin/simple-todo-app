@@ -9,16 +9,28 @@ type Todo = {
 
 interface TodoState {
   todos: Todo[];
+  isNewActive: boolean;
+  isEditActive: boolean;
 }
 
 const initialState: TodoState = {
   todos: [],
+  isNewActive: false,
+  isEditActive: false,
 };
 
 const todoSlice = createSlice({
   name: 'todo',
   initialState,
   reducers: {
+    setIsNewActive: (state) => {
+      state.isNewActive = true;
+      state.isEditActive = false;
+    },
+    setIsEditActive: (state) => {
+      state.isNewActive = false;
+      state.isEditActive = true;
+    },
     listTodos: (state) => {
       const storedTodos = localStorage.getItem('todos');
       if (storedTodos) {
